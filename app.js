@@ -5,12 +5,14 @@ const bodyParser = require("body-parser");
 const userRoutes = require("./routes/userRoutes");
 const producsRoutes = require("./routes/Prodcutsroutes");
 const PORT = 3005;
+const AWS = require("aws-sdk");
 const Message = require("./models/messageModel");
 const auth = require("./middleware/auth");
 const cors = require("cors");
 const socket = require("socket.io");
 const mongoose = require("mongoose");
 
+require("dotenv").config();
 mongoose.connect("mongodb://127.0.0.1:27017/testDb").then(() => {
   console.log("mongodb connected");
 });
@@ -39,6 +41,18 @@ const io = socket(server, {
 
 global.onlineUsers = new Map();
 
+const region = "us-east-1";
+const bucketName = "images-bucket-s3-3r";
+const accsessKeyId = "";
+const secretAccessKey = "";
+
+const s3 = new AWS.S3({
+  region,
+  accsessKeyId,
+  secretAccessKey,
+  signatureVersion: "4",
+});
+
 io.on("connection", (socket) => {
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
@@ -60,7 +74,7 @@ io.on("connection", (socket) => {
         message: msg.message,
       };
     });
-    console.log(projectMessages, "mesages");
+
     socket.emit("projectMessages", projectMessages);
     // res.json(projectMessages);
   }),
@@ -75,7 +89,7 @@ io.on("connection", (socket) => {
         });
 
         const sendUserSocket = onlineUsers.get(data.to);
-        console.log(data);
+
         if (sendUserSocket) {
           socket.to(sendUserSocket).emit("msg-recieve", data.message);
         }

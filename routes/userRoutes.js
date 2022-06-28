@@ -10,4 +10,6 @@ router.post("/getUser", userController.get_user);
 
 router.get("/allUsers/:id", userController.get_all_users);
 
+router.get("/editUser", userController.edit_user);
+
 module.exports = router;
