@@ -4,14 +4,12 @@ const app = express();
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/userRoutes");
 const producsRoutes = require("./routes/Prodcutsroutes");
-const PORT = 3003;
+const PORT = 3005;
 const Message = require("./models/messageModel");
 const auth = require("./middleware/auth");
 const cors = require("cors");
 const socket = require("socket.io");
 const mongoose = require("mongoose");
-const user = require("./models/user");
-const { json } = require("express/lib/response");
 
 mongoose.connect("mongodb://127.0.0.1:27017/testDb").then(() => {
   console.log("mongodb connected");
@@ -75,7 +73,7 @@ io.on("connection", (socket) => {
           users: [fromUser, to],
           sender: fromUser,
         });
-        
+
         const sendUserSocket = onlineUsers.get(data.to);
         console.log(data);
         if (sendUserSocket) {
