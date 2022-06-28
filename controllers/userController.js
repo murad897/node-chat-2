@@ -104,9 +104,23 @@ const get_all_users = async (req, res) => {
   }
 };
 
+const edit_user = async (req, res) => {
+  try {
+    console.log(req.file);
+    res.send({
+      message: "ok",
+    });
+  } catch (e) {
+    res.send({
+      message: e.message,
+    });
+  }
+};
+
 module.exports = {
   registrate_user,
   login_user,
   get_user,
   get_all_users,
+  edit_user,
 };
