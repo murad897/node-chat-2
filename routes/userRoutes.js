@@ -12,4 +12,6 @@ router.get("/allUsers/:id", userController.get_all_users);
 
 router.get("/editUser", userController.edit_user);
 
+router.post("/uploadImage", userController.set_profile_pic);
+
 module.exports = router;

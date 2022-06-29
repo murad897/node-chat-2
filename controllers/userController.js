@@ -1,8 +1,31 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const AWS = require("aws-sdk");
+const multer = require("multer");
+const multerS3 = require("multer-s3");
 
 require("dotenv").config();
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_KEY_ID,
+  region: process.env.S3_BUCKET_REGION,
+});
+
+const upload = () =>
+  multer({
+    storage: multerS3({
+      s3,
+      bucket: "image-upload-task",
+      metadata: function (req, file, cb) {
+        cb(null, { fieldName: file.fieldname });
+      },
+      key: function (req, file, cb) {
+        cb(null, "image.jpeg");
+      },
+    }),
+  });
 
 const login_user = async (req, res) => {
   try {
@@ -117,10 +140,20 @@ const edit_user = async (req, res) => {
   }
 };
 
+const set_profile_pic = (req, res, err) => {
+  res.status(200).send({
+    message: "ok",
+    data: req.body,
+  });
+
+  console.log(req.body, "body");
+};
+
 module.exports = {
   registrate_user,
   login_user,
   get_user,
   get_all_users,
   edit_user,
+  set_profile_pic,
 };
