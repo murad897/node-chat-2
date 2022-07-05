@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/auth");
 const userController = require("../controllers/userController");
 // register user
 router.post("/register", userController.registrate_user);
@@ -12,6 +13,6 @@ router.get("/allUsers/:id", userController.get_all_users);
 
 router.get("/editUser", userController.edit_user);
 
-router.post("/uploadImage", userController.set_profile_pic);
+router.post("/uploadImage", auth.verifyToken, userController.set_profile_pic);
 
 module.exports = router;

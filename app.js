@@ -1,16 +1,15 @@
 const express = require("express");
 const http = require("http");
 const app = express();
+const User = require("./models/user");
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/userRoutes");
 const producsRoutes = require("./routes/Prodcutsroutes");
-const PORT = 3005;
+const PORT = 3007;
 const Message = require("./models/messageModel");
-const auth = require("./middleware/auth");
 const cors = require("cors");
 const socket = require("socket.io");
 const mongoose = require("mongoose");
-//const expressFileUpload = require("express-fileupload");
 
 require("dotenv").config();
 
@@ -78,7 +77,12 @@ io.on("connection", (socket) => {
         });
 
         const sendUserSocket = onlineUsers.get(data.to);
-
+        const current = await User.findById(fromUser);
+        const anotherUser = await User.findById(to);
+        const users = [current, anotherUser];
+        console.log(anotherUser);
+        console.log(current);
+        socket.emit("usersAvatar", users);
         if (sendUserSocket) {
           socket.to(sendUserSocket).emit("msg-recieve", data.message);
         }
